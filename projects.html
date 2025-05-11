@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tafara | Projects</title>
+    <style>
+        :root {
+            --ctp-rosewater: #f5e0dc;
+            --ctp-lavender: #b4befe;
+            --ctp-mauve: #cba6f7;
+            --ctp-pink: #f5c2e7;
+            --ctp-base: #1e1e2e;
+            --ctp-surface0: #313244;
+            --ctp-text: #cdd6f4;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body::-webkit-scrollbar {
+            display: none;
+        }
+
+        body {
+            background-color: var(--ctp-base);
+            color: var(--ctp-text);
+            line-height: 1.6;
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            min-height: 100vh;
+        }
+
+        header {
+            position: fixed;
+            top: 0;
+            width: 100%;
+            background: rgba(30, 30, 46, 0.75);
+            backdrop-filter: blur(12px);
+            padding: 1rem 2rem;
+            z-index: 1000;
+            border-bottom: 1px solid rgba(180, 190, 254, 0.15);
+            box-shadow: 0 4px 30px rgba(0, 0, 0, 0.15);
+            height: 70px;
+            display: flex;
+            align-items: center;
+        }
+
+        nav {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            width: 100%;
+        }
+
+        .logo {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: var(--ctp-lavender);
+            text-decoration: none;
+            transition: color 0.3s ease;
+        }
+
+        .logo:hover {
+            color: var(--ctp-mauve);
+        }
+
+        .nav-links a {
+            color: var(--ctp-text);
+            text-decoration: none;
+            margin-left: 2rem;
+            transition: color 0.3s ease;
+            position: relative;
+        }
+
+        .nav-links a::after {
+            content: '';
+            position: absolute;
+            width: 0;
+            height: 2px;
+            bottom: -4px;
+            left: 0;
+            background-color: var(--ctp-mauve);
+            transition: width 0.3s ease;
+        }
+
+        .nav-links a:hover::after {
+            width: 100%;
+        }
+
+        main {
+            padding-top: 90px;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding-left: 20px;
+            padding-right: 20px;
+        }
+
+        .projects-container {
+            display: grid;
+            gap: 20px;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+        }
+
+        .project-card {
+            background: rgba(30, 30, 46, 0.3);
+            backdrop-filter: blur(8px);
+            border-radius: 12px;
+            padding: 20px;
+            border: 1px solid rgba(180, 190, 254, 0.1);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            cursor: pointer;
+        }
+
+        .project-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 30px rgba(180, 190, 254, 0.2);
+        }
+
+        .project-title {
+            font-size: 1.25rem;
+            color: var(--ctp-lavender);
+            margin-bottom: 10px;
+        }
+
+        .project-description {
+            font-size: 0.9rem;
+            color: var(--ctp-text);
+            margin-bottom: 15px;
+        }
+
+        .project-meta {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            font-size: 0.8rem;
+            color: var(--ctp-text);
+            opacity: 0.8;
+        }
+
+        .project-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-top: 15px;
+        }
+
+        .project-tag {
+            background: rgba(180, 190, 254, 0.1);
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 0.8rem;
+            color: var(--ctp-lavender);
+        }
+
+        .loading {
+            text-align: center;
+            padding: 40px;
+            font-size: 1.2rem;
+            color: var(--ctp-lavender);
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .project-card {
+            animation: fadeIn 0.5s ease forwards;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <nav>
+            <a href="index.html" class="logo">Tafara</a>
+            <div class="nav-links">
+                <a href="index.html">Home</a>
+                <a href="projects.html">Projects</a>
+            </div>
+        </nav>
+    </header>
+
+    <main>
+        <div class="projects-container">
+            <div class="loading">Loading projects...</div>
+        </div>
+    </main>
+
+    <script>
+        async function fetchProjects() {
+            const username = '111nation';
+            const excludeRepos = ['COS132'];
+            
+            try {
+                const response = await fetch(`https://api.github.com/users/${username}/repos`);
+                const projects = await response.json();
+                
+                const projectsContainer = document.querySelector('.projects-container');
+                projectsContainer.innerHTML = '';
+
+                projects
+                    .filter(project => !excludeRepos.includes(project.name))
+                    .forEach(project => {
+                        const card = document.createElement('div');
+                        card.className = 'project-card';
+                        
+                        const languages = project.language ? [project.language] : [];
+                        const tags = languages.map(lang => `<span class="project-tag">${lang}</span>`).join('');
+                        
+                        card.innerHTML = `
+                            <h3 class="project-title">${project.name}</h3>
+                            <p class="project-description">${project.description || 'No description available'}</p>
+                            <div class="project-meta">
+                                <span>⭐ ${project.stargazers_count}</span>
+                                <span>🔄 ${project.forks_count}</span>
+                            </div>
+                            <div class="project-tags">
+                                ${tags}
+                            </div>
+                        `;
+                        
+                        card.addEventListener('click', () => {
+                            window.open(project.html_url, '_blank');
+                        });
+                        
+                        projectsContainer.appendChild(card);
+                    });
+            } catch (error) {
+                console.error('Error fetching projects:', error);
+                document.querySelector('.loading').textContent = 'Error loading projects. Please try again later.';
+            }
+        }
+
+        // Fetch projects when the page loads
+        document.addEventListener('DOMContentLoaded', fetchProjects);
+    </script>
+</body>
+</html> 

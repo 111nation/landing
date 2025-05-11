@@ -1,0 +1,785 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tafara | Developer</title>
+    <style>
+        :root {
+            --ctp-rosewater: #f5e0dc;
+            --ctp-lavender: #b4befe;
+            --ctp-mauve: #cba6f7;
+            --ctp-pink: #f5c2e7;
+            --ctp-base: #1e1e2e;
+            --ctp-surface0: #313244;
+            --ctp-text: #cdd6f4;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        /* Hide scrollbar for Chrome, Safari and Opera */
+        body::-webkit-scrollbar {
+            display: none;
+        }
+
+        /* Hide scrollbar for IE, Edge and Firefox */
+        body {
+            background-color: var(--ctp-base);
+            color: var(--ctp-text);
+            line-height: 1.6;
+            overflow: hidden;
+            -ms-overflow-style: none;  /* IE and Edge */
+            scrollbar-width: none;  /* Firefox */
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            height: 100vh;
+        }
+
+        .matrix-bg {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -2;
+            opacity: 0.05;
+            pointer-events: none;
+        }
+
+        header {
+            position: fixed;
+            top: 0;
+            width: 100%;
+            background: rgba(30, 30, 46, 0.75);
+            backdrop-filter: blur(12px);
+            padding: 1rem 2rem;
+            z-index: 1000;
+            border-bottom: 1px solid rgba(180, 190, 254, 0.15);
+            box-shadow: 0 4px 30px rgba(0, 0, 0, 0.15);
+            height: 70px; /* Fixed height for header */
+            display: flex;
+            align-items: center;
+        }
+
+        nav {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: var(--ctp-lavender);
+            text-decoration: none;
+            transition: color 0.3s ease;
+        }
+
+        .logo:hover {
+            color: var(--ctp-mauve);
+        }
+
+        .nav-links a {
+            color: var(--ctp-text);
+            text-decoration: none;
+            margin-left: 2rem;
+            transition: color 0.3s ease;
+            position: relative;
+        }
+
+        .nav-links a::after {
+            content: '';
+            position: absolute;
+            width: 0;
+            height: 2px;
+            bottom: -4px;
+            left: 0;
+            background-color: var(--ctp-mauve);
+            transition: width 0.3s ease;
+        }
+
+        .nav-links a:hover::after {
+            width: 100%;
+        }
+
+        main {
+            padding-top: 70px; /* Match header height */
+            min-height: 100vh;
+            width: 100%;
+            position: relative;
+        }
+
+        .hero {
+            min-height: calc(100vh - 90px); /* Adjusted to account for header and margins */
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            position: relative;
+            padding: 2rem;
+            background: rgba(30, 30, 46, 0.3);
+            backdrop-filter: blur(8px);
+            border-radius: 24px;
+            margin: 20px;
+            border: 1px solid rgba(180, 190, 254, 0.1);
+            overflow: hidden;
+        }
+
+        .hero h1 {
+            font-size: 3.5rem;
+            margin-bottom: 1.5rem;
+            background: linear-gradient(45deg, var(--ctp-lavender), var(--ctp-mauve));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            animation: fadeInUp 0.8s ease;
+            font-family: 'Courier New', monospace;
+        }
+
+        .hero p {
+            font-size: 1.2rem;
+            max-width: 600px;
+            margin-bottom: 2rem;
+            color: var(--ctp-text);
+            opacity: 0;
+            animation: fadeInUp 0.8s ease 0.2s forwards;
+        }
+
+        .cta-button {
+            margin-top: 3rem;
+            padding: 1rem 2.5rem;
+            font-size: 1.1rem;
+            background: linear-gradient(45deg, var(--ctp-lavender), var(--ctp-mauve));
+            border: none;
+            border-radius: 50px;
+            color: var(--ctp-base);
+            cursor: pointer;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            opacity: 0;
+            animation: fadeInUp 0.8s ease 0.4s forwards;
+            backdrop-filter: blur(8px);
+            box-shadow: 0 4px 20px rgba(180, 190, 254, 0.3);
+        }
+
+        .cta-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 30px rgba(180, 190, 254, 0.4);
+        }
+
+        .floating-shapes {
+            position: absolute;
+            width: 100vw; /* Restore full viewport width for smooth animation */
+            height: 100%;
+            z-index: -1;
+            pointer-events: none;
+            left: 50%;
+            top: 0;
+            transform: translateX(-50%); /* Center the animation area */
+        }
+
+        .shape {
+            position: absolute;
+            background: linear-gradient(45deg, var(--ctp-lavender), var(--ctp-mauve));
+            border-radius: 50%;
+            opacity: 0;
+            will-change: transform;
+            transform-origin: center center;
+        }
+
+        @keyframes floatAcross {
+            0% { 
+                transform: translate(-10vw, -50%) rotate(0deg);
+                opacity: 0;
+            }
+            10% { opacity: 0.1; }
+            90% { opacity: 0.1; }
+            100% { 
+                transform: translate(110vw, -50%) rotate(360deg);
+                opacity: 0;
+            }
+        }
+
+        .typed-text {
+            font-family: 'Courier New', monospace;
+            position: relative;
+            display: inline-block;
+            font-size: 3.5rem;
+            margin-bottom: 1.5rem;
+            background: linear-gradient(45deg, var(--ctp-lavender), var(--ctp-mauve));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            opacity: 0;
+            text-shadow: 0 0 30px rgba(180, 190, 254, 0.3);
+        }
+
+        .cursor {
+            display: inline-block;
+            width: 3px;
+            height: 1em;
+            background-color: var(--ctp-lavender);
+            margin-left: 5px;
+            animation: blink 0.7s infinite;
+            vertical-align: middle;
+        }
+
+        .cursor.typing {
+            animation: none;
+        }
+
+        .cursor.hiding {
+            animation: cursorHide 0.5s forwards;
+        }
+
+        @keyframes blink {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0; }
+        }
+
+        @keyframes cursorHide {
+            from { opacity: 1; width: 3px; }
+            to { opacity: 0; width: 0; }
+        }
+
+        .dynamic-text {
+            font-family: 'Courier New', monospace;
+            opacity: 0;
+            transform: translateY(20px);
+            white-space: nowrap;
+            font-size: 1.2rem;
+            background: rgba(30, 30, 46, 0.6);
+            backdrop-filter: blur(8px);
+            padding: 1rem 2rem;
+            border-radius: 16px;
+            border: 1px solid rgba(180, 190, 254, 0.15);
+            box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+            display: inline-block;
+            max-width: 90%;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .dynamic-text.visible {
+            opacity: 1;
+            transform: translateY(0);
+            transition: opacity 0.5s ease, transform 0.5s ease;
+        }
+
+        .skills {
+            margin-top: 2rem;
+            font-family: 'Courier New', monospace;
+            opacity: 0;
+            transform: translateY(20px);
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 0.75rem;
+            max-width: 800px;
+            margin-left: auto;
+            margin-right: auto;
+            padding: 0.5rem;
+        }
+
+        .skills.visible {
+            opacity: 1;
+            transform: translateY(0);
+            transition: opacity 0.5s ease, transform 0.5s ease;
+        }
+
+        .skill-tag {
+            display: inline-block;
+            padding: 0.75rem 1.5rem;
+            background: rgba(180, 190, 254, 0.1);
+            backdrop-filter: blur(8px);
+            border-radius: 20px;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+            border: 1px solid rgba(180, 190, 254, 0.15);
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            min-width: 120px;
+            text-align: center;
+        }
+
+        .skill-tag:hover {
+            background: rgba(180, 190, 254, 0.2);
+            transform: translateY(-2px);
+            border-color: rgba(180, 190, 254, 0.3);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+        }
+
+        .social-link {
+            margin-top: 1.5rem;
+            color: var(--ctp-lavender);
+            text-decoration: none;
+            font-family: 'Courier New', monospace;
+            padding: 0.75rem 1.5rem;
+            border-radius: 16px;
+            background: rgba(30, 30, 46, 0.6);
+            backdrop-filter: blur(8px);
+            border: 1px solid rgba(180, 190, 254, 0.15);
+            transition: all 0.3s ease;
+        }
+
+        .social-link:hover {
+            background: rgba(180, 190, 254, 0.2);
+            color: var(--ctp-mauve);
+            transform: translateY(-2px);
+        }
+
+        @keyframes slideDown {
+            from { transform: translateY(-100%); }
+            to { transform: translateY(0); }
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @media (max-width: 768px) {
+            .nav-links {
+                display: none;
+            }
+            
+            .hero h1 {
+                font-size: 2.5rem;
+            }
+            .dynamic-text {
+                font-size: 1rem;
+                padding: 0.75rem 1.5rem;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .dynamic-text {
+                font-size: 0.9rem;
+                padding: 0.5rem 1rem;
+            }
+        }
+
+        .page-section {
+            position: absolute;
+            width: 100%;
+            min-height: calc(100vh - 90px);
+            opacity: 0;
+            transform: translateY(20px);
+            transition: opacity 0.5s ease, transform 0.5s ease;
+            display: none;
+        }
+
+        .page-section.active {
+            opacity: 1;
+            transform: translateY(0);
+            display: block;
+        }
+
+        .about-section {
+            padding: 2rem;
+            background: rgba(30, 30, 46, 0.3);
+            backdrop-filter: blur(8px);
+            border-radius: 24px;
+            margin: 20px;
+            border: 1px solid rgba(180, 190, 254, 0.1);
+        }
+
+        .contribution-graph {
+            margin-top: 2rem;
+            padding: 1.5rem;
+            background: rgba(30, 30, 46, 0.5);
+            border-radius: 12px;
+            border: 1px solid rgba(180, 190, 254, 0.1);
+        }
+
+        .graph-grid {
+            display: grid;
+            grid-template-columns: repeat(52, 1fr);
+            gap: 3px;
+            margin-top: 1rem;
+        }
+
+        .graph-cell {
+            aspect-ratio: 1;
+            border-radius: 2px;
+            background: rgba(180, 190, 254, 0.1);
+            transition: transform 0.2s ease, background-color 0.2s ease;
+        }
+
+        .graph-cell:hover {
+            transform: scale(1.2);
+        }
+
+        .graph-cell[data-level="0"] { background: rgba(180, 190, 254, 0.1); }
+        .graph-cell[data-level="1"] { background: rgba(180, 190, 254, 0.3); }
+        .graph-cell[data-level="2"] { background: rgba(180, 190, 254, 0.5); }
+        .graph-cell[data-level="3"] { background: rgba(180, 190, 254, 0.7); }
+        .graph-cell[data-level="4"] { background: rgba(180, 190, 254, 0.9); }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1.5rem;
+            margin-top: 2rem;
+        }
+
+        .stat-card {
+            background: rgba(30, 30, 46, 0.3);
+            backdrop-filter: blur(8px);
+            border-radius: 12px;
+            padding: 1.5rem;
+            border: 1px solid rgba(180, 190, 254, 0.1);
+            text-align: center;
+            transition: transform 0.3s ease;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .stat-value {
+            font-size: 2rem;
+            color: var(--ctp-lavender);
+            margin-bottom: 0.5rem;
+        }
+
+        .stat-label {
+            font-size: 0.9rem;
+            opacity: 0.8;
+        }
+
+        .social-links {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 1rem;
+            margin-top: 2rem;
+            justify-content: center;
+        }
+
+        .social-link {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.75rem 1.5rem;
+            background: rgba(180, 190, 254, 0.1);
+            border-radius: 50px;
+            text-decoration: none;
+            color: var(--ctp-text);
+            transition: transform 0.3s ease, background-color 0.3s ease;
+        }
+
+        .social-link:hover {
+            transform: translateY(-2px);
+            background: rgba(180, 190, 254, 0.2);
+        }
+
+        .social-link i {
+            font-size: 1.2rem;
+        }
+    </style>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+    <canvas class="matrix-bg" id="matrixCanvas"></canvas>
+    <header>
+        <nav>
+            <a href="#" class="logo">~/tafara</a>
+            <div class="nav-links">
+                <a href="#" data-section="home">Home</a>
+                <a href="#" data-section="about">About</a>
+                <a href="#" data-section="projects">Projects</a>
+            </div>
+        </nav>
+    </header>
+
+    <main>
+        <section id="home" class="page-section hero active">
+            <div class="floating-shapes" id="floatingShapes">
+                <!-- Shapes will be generated by JS -->
+            </div>
+            <h1 class="typed-text" id="nameText">Hello, I'm Tafara</h1>
+            <span class="cursor" id="cursor"></span>
+            <p class="dynamic-text" id="dynamicText">Full Stack Developer • Tech Enthusiast • Digital Explorer</p>
+            <div class="skills" id="skillsText">
+                <div class="skill-tag">Python</div>
+                <div class="skill-tag">JavaScript</div>
+                <div class="skill-tag">TypeScript</div>
+                <div class="skill-tag">Node.js</div>
+                <div class="skill-tag">Full Stack</div>
+                <div class="skill-tag">UI/UX</div>
+                <div class="skill-tag">System Design</div>
+                <div class="skill-tag">Linux</div>
+            </div>
+            <button class="cta-button" onclick="window.location.href='#about'">About Me</button>
+            <a href="https://x.com/111nation" target="_blank" class="social-link">@111nation</a>
+        </section>
+
+        <section id="about" class="page-section about-section">
+            <h2 class="typed-text">About Me</h2>
+            <div class="contribution-graph">
+                <h3>Contribution Activity</h3>
+                <div class="graph-grid" id="contributionGraph"></div>
+            </div>
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-value" id="totalStars">0</div>
+                    <div class="stat-label">Total Stars</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value" id="totalFollowers">0</div>
+                    <div class="stat-label">Followers</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value" id="totalRepos">0</div>
+                    <div class="stat-label">Repositories</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value" id="totalContributions">0</div>
+                    <div class="stat-label">Contributions</div>
+                </div>
+            </div>
+            <div class="social-links">
+                <a href="https://twitter.com/111nation" class="social-link" target="_blank">
+                    <i class="fab fa-twitter"></i>
+                    <span>Twitter</span>
+                </a>
+                <a href="https://github.com/111nation" class="social-link" target="_blank">
+                    <i class="fab fa-github"></i>
+                    <span>GitHub</span>
+                </a>
+            </div>
+        </section>
+
+        <section id="projects" class="page-section">
+            <div class="projects-container">
+                <div class="loading">Loading projects...</div>
+            </div>
+        </section>
+    </main>
+
+    <script>
+        // Matrix rain effect
+        const canvas = document.getElementById('matrixCanvas');
+        const ctx = canvas.getContext('2d');
+
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+
+        const chars = "アカサタナハマヤラワガザダバパイキシチニヒミリヰギジヂビピウクスツヌフムユルグズブヅプエケセテネヘメレヱゲゼデベペオコソトノホモヨロヲゴゾドボポヴッン0123456789";
+        const drops = [];
+        const fontSize = 14;
+        const columns = canvas.width / fontSize;
+
+        for (let i = 0; i < columns; i++) {
+            drops[i] = 1;
+        }
+
+        function drawMatrix() {
+            ctx.fillStyle = 'rgba(30, 30, 46, 0.05)';
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+            ctx.fillStyle = '#b4befe20';
+            ctx.font = fontSize + 'px monospace';
+
+            for (let i = 0; i < drops.length; i++) {
+                const text = chars[Math.floor(Math.random() * chars.length)];
+                ctx.fillText(text, i * fontSize, drops[i] * fontSize);
+                if (drops[i] * fontSize > canvas.height && Math.random() > 0.975) {
+                    drops[i] = 0;
+                }
+                drops[i]++;
+            }
+        }
+
+        // Restore original createShape function
+        function createShape() {
+            const shape = document.createElement('div');
+            shape.className = 'shape';
+            
+            // Restore original size range
+            const size = Math.random() * 80 + 40;
+            shape.style.width = size + 'px';
+            shape.style.height = size + 'px';
+            
+            // Random vertical position
+            const startY = Math.random() * 120 - 10;
+            shape.style.top = `${startY}%`;
+            
+            // Original longer duration
+            const duration = Math.random() * 20 + 25; // 25-45 seconds
+            const delay = Math.random() * -15;
+            
+            shape.style.animation = `floatAcross ${duration}s linear ${delay}s`;
+            
+            document.getElementById('floatingShapes').appendChild(shape);
+            
+            setTimeout(() => {
+                shape.remove();
+                createShape();
+            }, (duration + delay) * 1000);
+        }
+
+        // Create initial set of shapes
+        function initShapes() {
+            const numShapes = 30;
+            for (let i = 0; i < numShapes; i++) {
+                setTimeout(() => createShape(), i * 300);
+            }
+        }
+
+        // Initialize shapes
+        initShapes();
+
+        // Text encryption effect with standard characters
+        function encryptText(text) {
+            const chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+            return text.split('').map(char => 
+                char === ' ' || char === '•' ? char : chars[Math.floor(Math.random() * chars.length)]
+            ).join('');
+        }
+
+        // Typing animation with encryption
+        async function typeText(element, text, speed = 100) {
+            const cursor = document.getElementById('cursor');
+            cursor.classList.add('typing');
+            element.style.opacity = '1';
+            
+            for (let i = 0; i < text.length; i++) {
+                if (text[i] === 'T' && text.substr(i, 6) === 'Tafara') {
+                    // Slow down for name
+                    await new Promise(resolve => setTimeout(resolve, 200));
+                    element.textContent += 'T';
+                    await new Promise(resolve => setTimeout(resolve, 200));
+                    element.textContent += 'a';
+                    await new Promise(resolve => setTimeout(resolve, 200));
+                    element.textContent += 'f';
+                    await new Promise(resolve => setTimeout(resolve, 200));
+                    element.textContent += 'a';
+                    await new Promise(resolve => setTimeout(resolve, 200));
+                    element.textContent += 'r';
+                    await new Promise(resolve => setTimeout(resolve, 200));
+                    element.textContent += 'a';
+                    i += 5;
+                } else {
+                    element.textContent += text[i];
+                    await new Promise(resolve => setTimeout(resolve, speed));
+                }
+            }
+            
+            cursor.classList.remove('typing');
+            cursor.classList.add('hiding');
+            
+            // Show and animate the dynamic text
+            const dynamicText = document.getElementById('dynamicText');
+            const skillsText = document.getElementById('skillsText');
+            const finalText = dynamicText.textContent;
+            
+            // Initial encryption
+            dynamicText.textContent = encryptText(finalText);
+            dynamicText.classList.add('visible');
+            
+            // Decrypt effect
+            let iterations = 0;
+            const interval = setInterval(() => {
+                dynamicText.textContent = finalText.split('').map((char, index) => {
+                    if (index < iterations || char === ' ' || char === '•') {
+                        return finalText[index];
+                    }
+                    return chars[Math.floor(Math.random() * chars.length)];
+                }).join('');
+                
+                iterations += 1/2;
+                
+                if (iterations >= finalText.length) {
+                    clearInterval(interval);
+                    skillsText.classList.add('visible');
+                }
+            }, 30);
+        }
+
+        // Initialize animations
+        window.addEventListener('load', () => {
+            const nameText = document.getElementById('nameText');
+            nameText.textContent = '';
+            typeText(nameText, "Hello, I'm Tafara", 100);
+            setInterval(drawMatrix, 50);
+        });
+
+        // Handle window resize
+        window.addEventListener('resize', () => {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+        });
+
+        // Navigation and section switching
+        document.querySelectorAll('.nav-links a').forEach(link => {
+            link.addEventListener('click', (e) => {
+                e.preventDefault();
+                const targetSection = e.target.getAttribute('data-section');
+                switchSection(targetSection);
+            });
+        });
+
+        function switchSection(sectionId) {
+            document.querySelectorAll('.page-section').forEach(section => {
+                section.classList.remove('active');
+            });
+            document.getElementById(sectionId).classList.add('active');
+        }
+
+        // GitHub stats and contribution graph
+        async function fetchGitHubData() {
+            const username = '111nation';
+            
+            try {
+                const [userResponse, reposResponse] = await Promise.all([
+                    fetch(`https://api.github.com/users/${username}`),
+                    fetch(`https://api.github.com/users/${username}/repos`)
+                ]);
+                
+                const userData = await userResponse.json();
+                const reposData = await reposResponse.json();
+                
+                // Update stats
+                document.getElementById('totalFollowers').textContent = userData.followers;
+                document.getElementById('totalRepos').textContent = userData.public_repos;
+                
+                // Calculate total stars
+                const totalStars = reposData.reduce((acc, repo) => acc + repo.stargazers_count, 0);
+                document.getElementById('totalStars').textContent = totalStars;
+                
+                // Generate contribution graph
+                generateContributionGraph();
+            } catch (error) {
+                console.error('Error fetching GitHub data:', error);
+            }
+        }
+
+        function generateContributionGraph() {
+            const graphContainer = document.getElementById('contributionGraph');
+            const days = 365;
+            
+            for (let i = 0; i < days; i++) {
+                const cell = document.createElement('div');
+                cell.className = 'graph-cell';
+                cell.setAttribute('data-level', Math.floor(Math.random() * 5));
+                cell.title = `${Math.floor(Math.random() * 10)} contributions`;
+                graphContainer.appendChild(cell);
+            }
+        }
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', () => {
+            fetchGitHubData();
+            fetchProjects();
+        });
+    </script>
+</body>
+</html> 
