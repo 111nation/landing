@@ -19,20 +19,33 @@
             margin: 0;
             padding: 0;
             box-sizing: border-box;
+            user-select: none;
+            -webkit-user-select: none;
+            -moz-user-select: none;
+            -ms-user-select: none;
+            -webkit-tap-highlight-color: transparent;
         }
 
-        body::-webkit-scrollbar {
+        /* Hide scrollbar but allow scrolling */
+        ::-webkit-scrollbar {
             display: none;
+        }
+
+        * {
+            scrollbar-width: none;
+            -ms-overflow-style: none;
         }
 
         body {
             background-color: var(--ctp-base);
             color: var(--ctp-text);
             line-height: 1.6;
-            -ms-overflow-style: none;
-            scrollbar-width: none;
             font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
             min-height: 100vh;
+            width: 100vw;
+            cursor: default;
+            overflow-x: hidden;
+            overflow-y: auto;
         }
 
         header {
@@ -65,181 +78,274 @@
             color: var(--ctp-lavender);
             text-decoration: none;
             transition: color 0.3s ease;
+            cursor: pointer;
         }
 
         .logo:hover {
             color: var(--ctp-mauve);
         }
 
-        .nav-links a {
-            color: var(--ctp-text);
-            text-decoration: none;
-            margin-left: 2rem;
-            transition: color 0.3s ease;
-            position: relative;
-        }
-
-        .nav-links a::after {
-            content: '';
-            position: absolute;
-            width: 0;
-            height: 2px;
-            bottom: -4px;
-            left: 0;
-            background-color: var(--ctp-mauve);
-            transition: width 0.3s ease;
-        }
-
-        .nav-links a:hover::after {
-            width: 100%;
-        }
-
         main {
             padding-top: 90px;
+            padding-bottom: 2rem;
             max-width: 1200px;
             margin: 0 auto;
-            padding-left: 20px;
-            padding-right: 20px;
+            padding-left: 1rem;
+            padding-right: 1rem;
         }
 
-        .projects-container {
+        .projects-grid {
             display: grid;
-            gap: 20px;
             grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 1.5rem;
+            padding: 1rem;
         }
 
         .project-card {
             background: rgba(30, 30, 46, 0.3);
             backdrop-filter: blur(8px);
-            border-radius: 12px;
-            padding: 20px;
-            border: 1px solid rgba(180, 190, 254, 0.1);
-            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            border-radius: 16px;
+            border: 1px solid rgba(180, 190, 254, 0.15);
+            padding: 1.5rem;
+            transition: all 0.3s ease;
             cursor: pointer;
+            transform-origin: center;
         }
 
         .project-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 8px 30px rgba(180, 190, 254, 0.2);
+            transform: translateY(-5px) scale(1.02);
+            border-color: rgba(180, 190, 254, 0.3);
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.15);
+        }
+
+        .project-card:active {
+            transform: translateY(0) scale(0.98);
+            transition: all 0.1s ease;
         }
 
         .project-title {
             font-size: 1.25rem;
             color: var(--ctp-lavender);
-            margin-bottom: 10px;
+            margin-bottom: 0.5rem;
         }
 
         .project-description {
             font-size: 0.9rem;
-            color: var(--ctp-text);
-            margin-bottom: 15px;
-        }
-
-        .project-meta {
-            display: flex;
-            align-items: center;
-            gap: 15px;
-            font-size: 0.8rem;
-            color: var(--ctp-text);
-            opacity: 0.8;
+            opacity: 0.9;
+            margin-bottom: 1rem;
         }
 
         .project-tags {
             display: flex;
             flex-wrap: wrap;
-            gap: 8px;
-            margin-top: 15px;
+            gap: 0.5rem;
+            margin-top: auto;
         }
 
         .project-tag {
-            background: rgba(180, 190, 254, 0.1);
-            padding: 4px 8px;
-            border-radius: 4px;
             font-size: 0.8rem;
-            color: var(--ctp-lavender);
+            padding: 0.25rem 0.75rem;
+            background: rgba(180, 190, 254, 0.1);
+            border-radius: 12px;
+            border: 1px solid rgba(180, 190, 254, 0.15);
         }
 
         .loading {
             text-align: center;
-            padding: 40px;
+            padding: 2rem;
             font-size: 1.2rem;
             color: var(--ctp-lavender);
         }
 
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(20px); }
-            to { opacity: 1; transform: translateY(0); }
+        .matrix-bg {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -2;
+            opacity: 0.05;
+            pointer-events: none;
         }
 
-        .project-card {
-            animation: fadeIn 0.5s ease forwards;
+        .floating-shapes {
+            position: fixed;
+            width: 100%;
+            height: 100vh;
+            z-index: -1;
+            pointer-events: none;
+            left: 50%;
+            top: 0;
+            transform: translateX(-50%);
+            overflow: hidden;
+        }
+
+        .shape {
+            position: absolute;
+            background: linear-gradient(45deg, var(--ctp-lavender), var(--ctp-mauve));
+            border-radius: 50%;
+            opacity: 0;
+            will-change: transform;
+            transform-origin: center center;
+        }
+
+        @keyframes floatAcross {
+            0% { 
+                transform: translate(-10vw, -50%) rotate(0deg);
+                opacity: 0;
+            }
+            10% { opacity: 0.1; }
+            90% { opacity: 0.1; }
+            100% { 
+                transform: translate(110vw, -50%) rotate(360deg);
+                opacity: 0;
+            }
         }
     </style>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 </head>
 <body>
+    <canvas class="matrix-bg" id="matrixCanvas"></canvas>
+    <div class="floating-shapes" id="floatingShapes"></div>
+    
     <header>
         <nav>
-            <a href="index.html" class="logo">Tafara</a>
-            <div class="nav-links">
-                <a href="index.html">Home</a>
-                <a href="projects.html">Projects</a>
-            </div>
+            <a href="index.html" class="logo">~/tafara</a>
         </nav>
     </header>
 
     <main>
-        <div class="projects-container">
+        <div class="projects-grid" id="projectsGrid">
             <div class="loading">Loading projects...</div>
         </div>
     </main>
 
     <script>
-        async function fetchProjects() {
-            const username = '111nation';
-            const excludeRepos = ['COS132'];
-            
-            try {
-                const response = await fetch(`https://api.github.com/users/${username}/repos`);
-                const projects = await response.json();
-                
-                const projectsContainer = document.querySelector('.projects-container');
-                projectsContainer.innerHTML = '';
+        // Matrix rain effect
+        const canvas = document.getElementById('matrixCanvas');
+        const ctx = canvas.getContext('2d');
 
-                projects
-                    .filter(project => !excludeRepos.includes(project.name))
-                    .forEach(project => {
-                        const card = document.createElement('div');
-                        card.className = 'project-card';
-                        
-                        const languages = project.language ? [project.language] : [];
-                        const tags = languages.map(lang => `<span class="project-tag">${lang}</span>`).join('');
-                        
-                        card.innerHTML = `
-                            <h3 class="project-title">${project.name}</h3>
-                            <p class="project-description">${project.description || 'No description available'}</p>
-                            <div class="project-meta">
-                                <span>⭐ ${project.stargazers_count}</span>
-                                <span>🔄 ${project.forks_count}</span>
-                            </div>
-                            <div class="project-tags">
-                                ${tags}
-                            </div>
-                        `;
-                        
-                        card.addEventListener('click', () => {
-                            window.open(project.html_url, '_blank');
-                        });
-                        
-                        projectsContainer.appendChild(card);
-                    });
-            } catch (error) {
-                console.error('Error fetching projects:', error);
-                document.querySelector('.loading').textContent = 'Error loading projects. Please try again later.';
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+
+        const chars = "アカサタナハマヤラワガザダバパイキシチニヒミリヰギジヂビピウクスツヌフムユルグズブヅプエケセテネヘメレヱゲゼデベペオコソトノホモヨロヲゴゾドボポヴッン0123456789";
+        const drops = [];
+        const fontSize = 14;
+        const columns = canvas.width / fontSize;
+
+        for (let i = 0; i < columns; i++) {
+            drops[i] = 1;
+        }
+
+        function drawMatrix() {
+            ctx.fillStyle = 'rgba(30, 30, 46, 0.05)';
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+            ctx.fillStyle = '#b4befe20';
+            ctx.font = fontSize + 'px monospace';
+
+            for (let i = 0; i < drops.length; i++) {
+                const text = chars[Math.floor(Math.random() * chars.length)];
+                ctx.fillText(text, i * fontSize, drops[i] * fontSize);
+                if (drops[i] * fontSize > canvas.height && Math.random() > 0.975) {
+                    drops[i] = 0;
+                }
+                drops[i]++;
             }
         }
 
-        // Fetch projects when the page loads
-        document.addEventListener('DOMContentLoaded', fetchProjects);
+        // Floating shapes animation
+        function createShape() {
+            const shape = document.createElement('div');
+            shape.className = 'shape';
+            
+            const size = Math.random() * 60 + 40;
+            shape.style.width = size + 'px';
+            shape.style.height = size + 'px';
+            
+            const startY = Math.random() * 100;
+            shape.style.top = `${startY}%`;
+            
+            const duration = Math.random() * 15 + 20;
+            const delay = Math.random() * -20;
+            
+            shape.style.animation = `floatAcross ${duration}s linear ${delay}s infinite`;
+            
+            document.getElementById('floatingShapes').appendChild(shape);
+        }
+
+        function initShapes() {
+            const numShapes = 50;
+            for (let i = 0; i < numShapes; i++) {
+                setTimeout(() => createShape(), i * 200);
+            }
+        }
+
+        // Fetch and display projects
+        async function fetchProjects() {
+            const username = '111nation';
+            const projectsGrid = document.getElementById('projectsGrid');
+            
+            try {
+                const response = await fetch(`https://api.github.com/users/${username}/repos`);
+                const repos = await response.json();
+                
+                // Filter out COS132 repository
+                const filteredRepos = repos.filter(repo => repo.name !== 'COS132');
+                
+                projectsGrid.innerHTML = '';
+                
+                filteredRepos.forEach(repo => {
+                    const card = document.createElement('div');
+                    card.className = 'project-card';
+                    card.onclick = () => window.open(repo.html_url, '_blank');
+                    
+                    const title = document.createElement('div');
+                    title.className = 'project-title';
+                    title.textContent = repo.name;
+                    
+                    const description = document.createElement('div');
+                    description.className = 'project-description';
+                    description.textContent = repo.description || 'No description available';
+                    
+                    const tags = document.createElement('div');
+                    tags.className = 'project-tags';
+                    
+                    if (repo.language) {
+                        const langTag = document.createElement('span');
+                        langTag.className = 'project-tag';
+                        langTag.textContent = repo.language;
+                        tags.appendChild(langTag);
+                    }
+                    
+                    const starsTag = document.createElement('span');
+                    starsTag.className = 'project-tag';
+                    starsTag.textContent = `★ ${repo.stargazers_count}`;
+                    tags.appendChild(starsTag);
+                    
+                    card.appendChild(title);
+                    card.appendChild(description);
+                    card.appendChild(tags);
+                    projectsGrid.appendChild(card);
+                });
+                
+            } catch (error) {
+                console.error('Error fetching projects:', error);
+                projectsGrid.innerHTML = '<div class="loading">Failed to load projects</div>';
+            }
+        }
+
+        // Initialize
+        window.addEventListener('load', () => {
+            initShapes();
+            setInterval(drawMatrix, 50);
+            fetchProjects();
+        });
+
+        // Handle window resize
+        window.addEventListener('resize', () => {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+        });
     </script>
 </body>
 </html> 

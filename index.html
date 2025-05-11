@@ -19,23 +19,38 @@
             margin: 0;
             padding: 0;
             box-sizing: border-box;
+            user-select: none;
+            -webkit-user-select: none;
+            -moz-user-select: none;
+            -ms-user-select: none;
+            -webkit-tap-highlight-color: transparent;
         }
 
         /* Hide scrollbar for Chrome, Safari and Opera */
-        body::-webkit-scrollbar {
+        ::-webkit-scrollbar {
             display: none;
         }
 
-        /* Hide scrollbar for IE, Edge and Firefox */
+        /* Hide scrollbar for Firefox */
+        * {
+            scrollbar-width: none;
+        }
+
+        /* Hide scrollbar for IE and Edge */
+        * {
+            -ms-overflow-style: none;
+        }
+
         body {
             background-color: var(--ctp-base);
             color: var(--ctp-text);
             line-height: 1.6;
-            overflow: hidden;
-            -ms-overflow-style: none;  /* IE and Edge */
-            scrollbar-width: none;  /* Firefox */
             font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
-            height: 100vh;
+            min-height: 100vh;
+            width: 100vw;
+            cursor: default;
+            overflow-x: hidden;
+            overflow-y: auto;
         }
 
         .matrix-bg {
@@ -90,6 +105,7 @@
             margin-left: 2rem;
             transition: color 0.3s ease;
             position: relative;
+            cursor: pointer;
         }
 
         .nav-links a::after {
@@ -109,13 +125,13 @@
 
         main {
             padding-top: 70px; /* Match header height */
-            min-height: 100vh;
+            min-height: calc(100vh - 70px);
             width: 100%;
             position: relative;
         }
 
         .hero {
-            min-height: calc(100vh - 90px); /* Adjusted to account for header and margins */
+            min-height: calc(100vh - 90px);
             display: flex;
             flex-direction: column;
             justify-content: center;
@@ -129,6 +145,7 @@
             margin: 20px;
             border: 1px solid rgba(180, 190, 254, 0.1);
             overflow: hidden;
+            max-width: calc(100vw - 40px);
         }
 
         .hero h1 {
@@ -151,7 +168,8 @@
         }
 
         .cta-button {
-            margin-top: 3rem;
+            margin-top: 1rem;
+            margin-bottom: 1rem;
             padding: 1rem 2.5rem;
             font-size: 1.1rem;
             background: linear-gradient(45deg, var(--ctp-lavender), var(--ctp-mauve));
@@ -159,27 +177,34 @@
             border-radius: 50px;
             color: var(--ctp-base);
             cursor: pointer;
-            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            transition: all 0.3s ease;
             opacity: 0;
             animation: fadeInUp 0.8s ease 0.4s forwards;
             backdrop-filter: blur(8px);
             box-shadow: 0 4px 20px rgba(180, 190, 254, 0.3);
+            transform-origin: center;
         }
 
         .cta-button:hover {
-            transform: translateY(-2px);
+            transform: translateY(-2px) scale(1.05);
             box-shadow: 0 8px 30px rgba(180, 190, 254, 0.4);
         }
 
+        .cta-button:active {
+            transform: translateY(0) scale(0.95);
+            transition: all 0.1s ease;
+        }
+
         .floating-shapes {
-            position: absolute;
-            width: 100vw; /* Restore full viewport width for smooth animation */
-            height: 100%;
+            position: fixed;
+            width: 100%;
+            height: 100vh;
             z-index: -1;
             pointer-events: none;
             left: 50%;
             top: 0;
-            transform: translateX(-50%); /* Center the animation area */
+            transform: translateX(-50%);
+            overflow: visible;
         }
 
         .shape {
@@ -259,6 +284,7 @@
             box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
             display: inline-block;
             max-width: 90%;
+            margin: 1rem 0;
             overflow: hidden;
             text-overflow: ellipsis;
         }
@@ -271,6 +297,7 @@
 
         .skills {
             margin-top: 2rem;
+            margin-bottom: 2rem;
             font-family: 'Courier New', monospace;
             opacity: 0;
             transform: translateY(20px);
@@ -302,32 +329,58 @@
             box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
             min-width: 120px;
             text-align: center;
+            cursor: pointer;
+            transform-origin: center;
         }
 
         .skill-tag:hover {
+            background: rgba(180, 190, 254, 0.2);
+            transform: translateY(-2px) scale(1.05);
+            border-color: rgba(180, 190, 254, 0.3);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+        }
+
+        .skill-tag:active {
+            transform: translateY(0) scale(0.95);
+            transition: all 0.1s ease;
+        }
+
+        .social-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.75rem;
+            padding: 0.75rem 1.5rem;
+            background: rgba(180, 190, 254, 0.1);
+            border-radius: 50px;
+            text-decoration: none;
+            color: var(--ctp-text);
+            transition: all 0.3s ease;
+            font-size: 1.1rem;
+            border: 1px solid rgba(180, 190, 254, 0.15);
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            cursor: pointer;
+            transform-origin: center;
+        }
+
+        .social-link:active {
+            transform: translateY(0) scale(0.95);
+            transition: all 0.1s ease;
+        }
+
+        .social-link i {
+            font-size: 1.2rem;
+            color: var(--ctp-lavender);
+        }
+
+        .social-link:hover {
             background: rgba(180, 190, 254, 0.2);
             transform: translateY(-2px);
             border-color: rgba(180, 190, 254, 0.3);
             box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
         }
 
-        .social-link {
-            margin-top: 1.5rem;
-            color: var(--ctp-lavender);
-            text-decoration: none;
-            font-family: 'Courier New', monospace;
-            padding: 0.75rem 1.5rem;
-            border-radius: 16px;
-            background: rgba(30, 30, 46, 0.6);
-            backdrop-filter: blur(8px);
-            border: 1px solid rgba(180, 190, 254, 0.15);
-            transition: all 0.3s ease;
-        }
-
-        .social-link:hover {
-            background: rgba(180, 190, 254, 0.2);
+        .social-link:hover i {
             color: var(--ctp-mauve);
-            transform: translateY(-2px);
         }
 
         @keyframes slideDown {
@@ -357,6 +410,7 @@
             .dynamic-text {
                 font-size: 1rem;
                 padding: 0.75rem 1.5rem;
+                max-width: 95%;
             }
         }
 
@@ -364,17 +418,19 @@
             .dynamic-text {
                 font-size: 0.9rem;
                 padding: 0.5rem 1rem;
+                max-width: 100%;
             }
         }
 
         .page-section {
-            position: absolute;
+            position: relative;
             width: 100%;
-            min-height: calc(100vh - 90px);
+            min-height: calc(100vh - 70px);
             opacity: 0;
             transform: translateY(20px);
             transition: opacity 0.5s ease, transform 0.5s ease;
             display: none;
+            padding-bottom: 2rem;
         }
 
         .page-section.active {
@@ -390,6 +446,7 @@
             border-radius: 24px;
             margin: 20px;
             border: 1px solid rgba(180, 190, 254, 0.1);
+            min-height: calc(100vh - 110px);
         }
 
         .contribution-graph {
@@ -405,17 +462,25 @@
             grid-template-columns: repeat(52, 1fr);
             gap: 3px;
             margin-top: 1rem;
+            min-height: 100px;
         }
 
         .graph-cell {
             aspect-ratio: 1;
             border-radius: 2px;
             background: rgba(180, 190, 254, 0.1);
-            transition: transform 0.2s ease, background-color 0.2s ease;
+            transition: all 0.2s ease;
+            cursor: pointer;
         }
 
         .graph-cell:hover {
             transform: scale(1.2);
+            box-shadow: 0 0 10px rgba(180, 190, 254, 0.3);
+        }
+
+        .graph-cell:active {
+            transform: scale(1);
+            transition: all 0.1s ease;
         }
 
         .graph-cell[data-level="0"] { background: rgba(180, 190, 254, 0.1); }
@@ -438,11 +503,18 @@
             padding: 1.5rem;
             border: 1px solid rgba(180, 190, 254, 0.1);
             text-align: center;
-            transition: transform 0.3s ease;
+            transition: all 0.3s ease;
+            cursor: pointer;
+            transform-origin: center;
         }
 
         .stat-card:hover {
-            transform: translateY(-5px);
+            transform: translateY(-5px) scale(1.02);
+        }
+
+        .stat-card:active {
+            transform: translateY(0) scale(0.98);
+            transition: all 0.1s ease;
         }
 
         .stat-value {
@@ -460,29 +532,18 @@
             display: flex;
             flex-wrap: wrap;
             gap: 1rem;
-            margin-top: 2rem;
+            margin-top: 1rem;
             justify-content: center;
         }
 
-        .social-link {
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-            padding: 0.75rem 1.5rem;
-            background: rgba(180, 190, 254, 0.1);
-            border-radius: 50px;
-            text-decoration: none;
-            color: var(--ctp-text);
-            transition: transform 0.3s ease, background-color 0.3s ease;
-        }
-
-        .social-link:hover {
-            transform: translateY(-2px);
-            background: rgba(180, 190, 254, 0.2);
-        }
-
-        .social-link i {
-            font-size: 1.2rem;
+        @media (hover: hover) {
+            .skill-tag:hover,
+            .social-link:hover,
+            .cta-button:hover,
+            .stat-card:hover,
+            .graph-cell:hover {
+                transform: translateY(-2px) scale(1.05);
+            }
         }
     </style>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
@@ -518,15 +579,20 @@
                 <div class="skill-tag">System Design</div>
                 <div class="skill-tag">Linux</div>
             </div>
-            <button class="cta-button" onclick="window.location.href='#about'">About Me</button>
-            <a href="https://x.com/111nation" target="_blank" class="social-link">@111nation</a>
+            <button class="cta-button" onclick="showSection('about')">About Me</button>
+            <div class="social-links">
+                <a href="https://twitter.com/111nation" class="social-link" target="_blank">
+                    <i class="fab fa-twitter"></i>
+                    @111nation
+                </a>
+            </div>
         </section>
 
         <section id="about" class="page-section about-section">
             <h2 class="typed-text">About Me</h2>
             <div class="contribution-graph">
-                <h3>Contribution Activity</h3>
-                <div class="graph-grid" id="contributionGraph"></div>
+                <h3>GitHub Contributions</h3>
+                <div class="graph-grid" id="contributionGrid"></div>
             </div>
             <div class="stats-grid">
                 <div class="stat-card">
@@ -603,53 +669,62 @@
             const shape = document.createElement('div');
             shape.className = 'shape';
             
-            // Restore original size range
-            const size = Math.random() * 80 + 40;
+            // Randomize size between 40px and 100px
+            const size = Math.random() * 60 + 40;
             shape.style.width = size + 'px';
             shape.style.height = size + 'px';
             
-            // Random vertical position
-            const startY = Math.random() * 120 - 10;
+            // Distribute shapes more evenly across vertical space
+            const startY = Math.random() * 100;
             shape.style.top = `${startY}%`;
             
-            // Original longer duration
-            const duration = Math.random() * 20 + 25; // 25-45 seconds
-            const delay = Math.random() * -15;
+            // Shorter duration for more continuous flow
+            const duration = Math.random() * 15 + 20; // 20-35 seconds
+            const delay = Math.random() * -20; // Larger negative delay range for better distribution
             
-            shape.style.animation = `floatAcross ${duration}s linear ${delay}s`;
+            shape.style.animation = `floatAcross ${duration}s linear ${delay}s infinite`;
             
             document.getElementById('floatingShapes').appendChild(shape);
-            
-            setTimeout(() => {
-                shape.remove();
-                createShape();
-            }, (duration + delay) * 1000);
         }
 
-        // Create initial set of shapes
+        // Create more initial shapes
         function initShapes() {
-            const numShapes = 30;
+            const numShapes = 50; // Increased number of shapes
             for (let i = 0; i < numShapes; i++) {
-                setTimeout(() => createShape(), i * 300);
+                setTimeout(() => createShape(), i * 200);
             }
         }
 
-        // Initialize shapes
-        initShapes();
+        // Initialize animations
+        window.addEventListener('load', () => {
+            initializeTypingAnimation();
+            initShapes();
+            setInterval(drawMatrix, 50);
+        });
+
+        function initializeTypingAnimation() {
+            const nameText = document.getElementById('nameText');
+            nameText.textContent = '';
+            typeText(nameText, "Hello, I'm Tafara", 100);
+        }
 
         // Text encryption effect with standard characters
         function encryptText(text) {
-            const chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+            const chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!@#$%^&*()";
             return text.split('').map(char => 
-                char === ' ' || char === '•' ? char : chars[Math.floor(Math.random() * chars.length)]
+                char === ' ' || char === '•' || char === '|' ? char : chars[Math.floor(Math.random() * chars.length)]
             ).join('');
         }
 
         // Typing animation with encryption
         async function typeText(element, text, speed = 100) {
             const cursor = document.getElementById('cursor');
+            const skillsText = document.getElementById('skillsText');
             cursor.classList.add('typing');
             element.style.opacity = '1';
+            
+            // Show skills earlier
+            skillsText.classList.add('visible');
             
             for (let i = 0; i < text.length; i++) {
                 if (text[i] === 'T' && text.substr(i, 6) === 'Tafara') {
@@ -678,7 +753,6 @@
             
             // Show and animate the dynamic text
             const dynamicText = document.getElementById('dynamicText');
-            const skillsText = document.getElementById('skillsText');
             const finalText = dynamicText.textContent;
             
             // Initial encryption
@@ -689,7 +763,7 @@
             let iterations = 0;
             const interval = setInterval(() => {
                 dynamicText.textContent = finalText.split('').map((char, index) => {
-                    if (index < iterations || char === ' ' || char === '•') {
+                    if (index < iterations || char === ' ' || char === '•' || char === '|') {
                         return finalText[index];
                     }
                     return chars[Math.floor(Math.random() * chars.length)];
@@ -699,18 +773,9 @@
                 
                 if (iterations >= finalText.length) {
                     clearInterval(interval);
-                    skillsText.classList.add('visible');
                 }
             }, 30);
         }
-
-        // Initialize animations
-        window.addEventListener('load', () => {
-            const nameText = document.getElementById('nameText');
-            nameText.textContent = '';
-            typeText(nameText, "Hello, I'm Tafara", 100);
-            setInterval(drawMatrix, 50);
-        });
 
         // Handle window resize
         window.addEventListener('resize', () => {
@@ -722,16 +787,79 @@
         document.querySelectorAll('.nav-links a').forEach(link => {
             link.addEventListener('click', (e) => {
                 e.preventDefault();
-                const targetSection = e.target.getAttribute('data-section');
-                switchSection(targetSection);
+                const section = link.getAttribute('data-section');
+                if (section === 'projects') {
+                    window.location.href = 'projects.html';
+                } else {
+                    navigateToSection(section);
+                }
             });
         });
 
-        function switchSection(sectionId) {
-            document.querySelectorAll('.page-section').forEach(section => {
+        // Logo click handler
+        document.querySelector('.logo').addEventListener('click', (e) => {
+            e.preventDefault();
+            if (window.location.pathname.endsWith('projects.html')) {
+                window.location.href = 'index.html';
+            } else {
+                navigateToSection('home');
+            }
+        });
+
+        function navigateToSection(sectionName) {
+            const currentSection = document.querySelector('.page-section.active');
+            const currentSectionName = currentSection.id;
+            
+            // Don't do anything if clicking the current section
+            if (currentSectionName === sectionName) {
+                return;
+            }
+
+            // Hide all sections
+            const sections = document.querySelectorAll('.page-section');
+            sections.forEach(section => {
                 section.classList.remove('active');
             });
-            document.getElementById(sectionId).classList.add('active');
+            
+            // Show target section
+            const targetSection = document.querySelector(`#${sectionName}`);
+            if (targetSection) {
+                targetSection.classList.add('active');
+            }
+            
+            // Update navigation active state
+            const navLinks = document.querySelectorAll('.nav-links a');
+            navLinks.forEach(link => {
+                link.classList.remove('active');
+                if (link.getAttribute('data-section') === sectionName) {
+                    link.classList.add('active');
+                }
+            });
+
+            // Reinitialize animations for home section
+            if (sectionName === 'home') {
+                const nameText = document.getElementById('nameText');
+                const dynamicText = document.getElementById('dynamicText');
+                const skillsText = document.getElementById('skillsText');
+                
+                // Reset classes and content
+                nameText.textContent = '';
+                nameText.style.opacity = '0';
+                dynamicText.classList.remove('visible');
+                skillsText.classList.remove('visible');
+                
+                // Restart animations
+                initializeTypingAnimation();
+            }
+        }
+
+        // Update the showSection function to use navigateToSection
+        function showSection(sectionName) {
+            if (sectionName === 'projects') {
+                window.location.href = 'projects.html';
+            } else {
+                navigateToSection(sectionName);
+            }
         }
 
         // GitHub stats and contribution graph
@@ -774,6 +902,126 @@
                 graphContainer.appendChild(cell);
             }
         }
+
+        // Fetch GitHub contribution data
+        async function fetchGitHubContributions() {
+            const username = '111nation';
+            
+            try {
+                // Fetch all types of events that might contain contributions
+                const [eventsResponse, reposResponse] = await Promise.all([
+                    fetch(`https://api.github.com/users/${username}/events/public?per_page=100`),
+                    fetch(`https://api.github.com/users/${username}/repos`)
+                ]);
+                
+                const events = await eventsResponse.json();
+                const repos = await reposResponse.json();
+                
+                // Create a map of dates to contribution counts
+                const contributionMap = new Map();
+                
+                // Process each repository to get commit data
+                for (const repo of repos) {
+                    if (repo.name === 'COS132') continue;
+                    
+                    try {
+                        const commitsResponse = await fetch(`https://api.github.com/repos/${username}/${repo.name}/commits?per_page=100&author=${username}`);
+                        const commits = await commitsResponse.json();
+                        
+                        commits.forEach(commit => {
+                            const date = commit.commit.author.date.split('T')[0];
+                            const currentCount = contributionMap.get(date) || 0;
+                            contributionMap.set(date, currentCount + 1);
+                        });
+                    } catch (error) {
+                        console.warn(`Error fetching commits for ${repo.name}:`, error);
+                    }
+                }
+                
+                // Also count other contribution types from events
+                events.forEach(event => {
+                    const date = event.created_at.split('T')[0];
+                    let count = contributionMap.get(date) || 0;
+                    
+                    switch(event.type) {
+                        case 'PushEvent':
+                            count += event.payload.size || 1;
+                            break;
+                        case 'CreateEvent':
+                        case 'PullRequestEvent':
+                        case 'IssuesEvent':
+                            count += 1;
+                            break;
+                    }
+                    
+                    contributionMap.set(date, count);
+                });
+                
+                // Calculate total contributions
+                const totalContributions = Array.from(contributionMap.values()).reduce((a, b) => a + b, 0);
+                document.getElementById('totalContributions').textContent = totalContributions;
+                
+                // Generate grid cells for contributions
+                const grid = document.getElementById('contributionGrid');
+                grid.innerHTML = '';
+                
+                // Get date range for the last year
+                const today = new Date();
+                const oneYearAgo = new Date(today);
+                oneYearAgo.setFullYear(today.getFullYear() - 1);
+                
+                // Find max contributions for scaling
+                let maxContributions = Math.max(...Array.from(contributionMap.values()));
+                if (maxContributions === 0) maxContributions = 1;
+                
+                // Create cells for each day
+                for (let d = new Date(oneYearAgo); d <= today; d.setDate(d.getDate() + 1)) {
+                    const dateStr = d.toISOString().split('T')[0];
+                    const count = contributionMap.get(dateStr) || 0;
+                    const level = getContributionLevel(count, maxContributions);
+                    
+                    const cell = document.createElement('div');
+                    cell.className = 'graph-cell';
+                    cell.setAttribute('data-level', level);
+                    cell.setAttribute('title', `${dateStr}: ${count} contributions`);
+                    
+                    // Add hover tooltip with date and count
+                    cell.addEventListener('mouseover', () => {
+                        const date = new Date(dateStr).toLocaleDateString('en-US', {
+                            weekday: 'short',
+                            year: 'numeric',
+                            month: 'short',
+                            day: 'numeric'
+                        });
+                        cell.setAttribute('title', `${date}: ${count} contributions`);
+                    });
+                    
+                    grid.appendChild(cell);
+                }
+                
+                // Update other stats
+                document.getElementById('totalRepos').textContent = repos.length;
+                const totalStars = repos.reduce((acc, repo) => acc + repo.stargazers_count, 0);
+                document.getElementById('totalStars').textContent = totalStars;
+                
+            } catch (error) {
+                console.error('Error fetching GitHub contributions:', error);
+                const grid = document.getElementById('contributionGrid');
+                grid.innerHTML = '<div class="loading">Failed to load contribution data</div>';
+            }
+        }
+        
+        function getContributionLevel(count, maxCount) {
+            if (count === 0) return '0';
+            const normalized = count / maxCount;
+            if (normalized <= 0.25) return '1';
+            if (normalized <= 0.5) return '2';
+            if (normalized <= 0.75) return '3';
+            return '4';
+        }
+        
+        // Initialize the contribution graph
+        fetchGitHubContributions();
 
         // Initialize
         document.addEventListener('DOMContentLoaded', () => {
