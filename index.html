@@ -128,29 +128,84 @@
             min-height: calc(100vh - 70px);
             width: 100%;
             position: relative;
+            max-width: 1920px; /* Maximum width for ultra-wide screens */
+            margin: 0 auto;
         }
 
         .hero {
             min-height: calc(100vh - 90px);
+            max-width: 1400px; /* Maximum width for large screens */
+            width: calc(100% - 40px); /* Account for margins */
+            margin: 20px auto;
+            padding: 2rem;
             display: flex;
             flex-direction: column;
             justify-content: center;
             align-items: center;
             text-align: center;
             position: relative;
-            padding: 2rem;
             background: rgba(30, 30, 46, 0.3);
             backdrop-filter: blur(8px);
             border-radius: 24px;
-            margin: 20px;
             border: 1px solid rgba(180, 190, 254, 0.1);
             overflow: hidden;
-            max-width: calc(100vw - 40px);
+            transition: all 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+            transform-origin: center center;
+            will-change: transform, opacity;
+        }
+
+        .hero::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(
+                120deg,
+                rgba(180, 190, 254, 0.05) 0%,
+                rgba(180, 190, 254, 0.02) 50%,
+                rgba(203, 166, 247, 0.05) 100%
+            );
+            pointer-events: none;
+            border-radius: 24px;
+        }
+
+        .hero::after {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(
+                circle at center,
+                rgba(180, 190, 254, 0.03) 0%,
+                transparent 50%
+            );
+            opacity: 0.7;
+            pointer-events: none;
+            animation: glassShine 10s infinite linear;
+        }
+
+        @keyframes glassShine {
+            from {
+                transform: rotate(0deg);
+            }
+            to {
+                transform: rotate(360deg);
+            }
+        }
+
+        .hero.fly-away {
+            transform: scale(0.1) translateY(-1000px) rotate(10deg);
+            opacity: 0;
+            pointer-events: none;
         }
 
         .hero h1 {
-            font-size: 3.5rem;
-            margin-bottom: 1.5rem;
+            font-size: clamp(2rem, 5vw, 3.5rem);
+            margin-bottom: clamp(1rem, 3vw, 1.5rem);
             background: linear-gradient(45deg, var(--ctp-lavender), var(--ctp-mauve));
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
@@ -233,8 +288,8 @@
             font-family: 'Courier New', monospace;
             position: relative;
             display: inline-block;
-            font-size: 3.5rem;
-            margin-bottom: 1.5rem;
+            font-size: clamp(2rem, 5vw, 3.5rem);
+            margin-bottom: clamp(1rem, 3vw, 1.5rem);
             background: linear-gradient(45deg, var(--ctp-lavender), var(--ctp-mauve));
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
@@ -275,18 +330,20 @@
             opacity: 0;
             transform: translateY(20px);
             white-space: nowrap;
-            font-size: 1.2rem;
+            font-size: clamp(0.9rem, 2vw, 1.2rem);
             background: rgba(30, 30, 46, 0.6);
             backdrop-filter: blur(8px);
-            padding: 1rem 2rem;
+            padding: clamp(0.75rem, 2vw, 1.5rem);
             border-radius: 16px;
             border: 1px solid rgba(180, 190, 254, 0.15);
             box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
-            display: inline-block;
-            max-width: 90%;
-            margin: 1rem 0;
+            display: block;
+            max-width: min(90%, 800px);
+            margin: 2rem auto 1rem auto;
             overflow: hidden;
             text-overflow: ellipsis;
+            position: relative;
+            z-index: 1;
         }
 
         .dynamic-text.visible {
@@ -305,9 +362,8 @@
             flex-wrap: wrap;
             justify-content: center;
             gap: 0.75rem;
-            max-width: 800px;
-            margin-left: auto;
-            margin-right: auto;
+            width: 100%;
+            max-width: 1200px;
             padding: 0.5rem;
         }
 
@@ -399,26 +455,169 @@
             }
         }
 
+        @media (max-width: 1024px) {
+            .hero {
+                padding: 1.5rem;
+            }
+
+            .skills {
+                padding: 0.25rem;
+                gap: 0.5rem;
+            }
+
+            .skill-tag {
+                min-width: 100px;
+                padding: 0.5rem 1rem;
+            }
+
+            .social-links {
+                flex-wrap: wrap;
+                justify-content: center;
+                gap: 0.75rem;
+            }
+        }
+
         @media (max-width: 768px) {
+            header {
+                padding: 0.75rem 1rem;
+                height: 60px;
+            }
+
+            main {
+                padding-top: 60px;
+            }
+
+            .hero {
+                margin: 10px;
+                width: calc(100% - 20px);
+                min-height: calc(100vh - 80px);
+                padding: 1rem;
+            }
+
             .nav-links {
-                display: none;
+                display: none; /* Hide nav links on mobile */
             }
-            
-            .hero h1 {
-                font-size: 2.5rem;
+
+            .logo {
+                font-size: 1.25rem;
             }
-            .dynamic-text {
+
+            .skill-tag {
+                min-width: 90px;
+                font-size: 0.9rem;
+                padding: 0.5rem 0.75rem;
+            }
+
+            .social-link {
+                padding: 0.5rem 1rem;
+                font-size: 0.9rem;
+            }
+
+            .ai-dedication {
+                padding: 1rem;
+            }
+
+            .ai-message {
+                padding: 1rem;
+                margin: 0.5rem;
+            }
+
+            .ai-message h2 {
+                font-size: 1.5rem;
+                margin-bottom: 1rem;
+            }
+
+            .ai-message p {
+                font-size: 0.9rem;
+                line-height: 1.6;
+                margin-bottom: 0.75rem;
+            }
+
+            .ai-signature {
                 font-size: 1rem;
-                padding: 0.75rem 1.5rem;
-                max-width: 95%;
+            }
+
+            .back-button {
+                top: 1rem;
+                right: 1rem;
+                padding: 0.5rem 1rem;
+                font-size: 0.9rem;
             }
         }
 
         @media (max-width: 480px) {
+            .hero h1, .typed-text {
+                font-size: 1.75rem;
+            }
+
             .dynamic-text {
-                font-size: 0.9rem;
-                padding: 0.5rem 1rem;
-                max-width: 100%;
+                font-size: 0.85rem;
+                padding: 0.5rem 0.75rem;
+            }
+
+            .skills {
+                gap: 0.4rem;
+            }
+
+            .skill-tag {
+                min-width: 80px;
+                font-size: 0.8rem;
+                padding: 0.4rem 0.6rem;
+            }
+        }
+
+        @media (min-width: 1920px) {
+            .hero {
+                padding: 3rem;
+            }
+
+            .hero h1, .typed-text {
+                font-size: 4rem;
+            }
+
+            .dynamic-text {
+                font-size: 1.4rem;
+            }
+
+            .skill-tag {
+                min-width: 140px;
+                font-size: 1.2rem;
+                padding: 0.85rem 1.75rem;
+            }
+
+            .social-link {
+                padding: 1rem 2rem;
+                font-size: 1.2rem;
+            }
+        }
+
+        @media (min-width: 2560px) {
+            main {
+                max-width: 2400px;
+            }
+
+            .hero {
+                max-width: 1800px;
+            }
+        }
+
+        @media (max-height: 600px) {
+            .hero {
+                padding: 1rem;
+                min-height: calc(100vh - 40px);
+            }
+
+            .hero h1, .typed-text {
+                margin-bottom: 0.75rem;
+            }
+
+            .skills {
+                margin-top: 1rem;
+                margin-bottom: 1rem;
+            }
+
+            .skill-tag {
+                padding: 0.4rem 0.8rem;
             }
         }
 
@@ -545,6 +744,138 @@
                 transform: translateY(-2px) scale(1.05);
             }
         }
+
+        .ai-dedication {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            display: none;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            background: rgba(30, 30, 46, 0.95);
+            padding: 2rem;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.5s ease, visibility 0.5s ease;
+            z-index: 2000;
+        }
+
+        .ai-dedication.visible {
+            opacity: 1;
+            visibility: visible;
+            display: flex;
+        }
+
+        .ai-message {
+            max-width: 800px;
+            text-align: center;
+            padding: 2rem;
+            background: rgba(180, 190, 254, 0.1);
+            backdrop-filter: blur(8px);
+            border-radius: 24px;
+            border: 1px solid rgba(180, 190, 254, 0.15);
+            margin: 1rem;
+            transform: translateY(50px);
+            opacity: 0;
+            transition: all 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .ai-message.visible {
+            transform: translateY(0);
+            opacity: 1;
+        }
+
+        .ai-signature {
+            font-family: 'Courier New', monospace;
+            color: var(--ctp-lavender);
+            margin-top: 1rem;
+            font-size: 1.2rem;
+            opacity: 0;
+            transform: translateY(20px);
+            transition: all 0.5s ease 0.3s;
+        }
+
+        .ai-signature.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .back-button {
+            position: absolute;
+            top: 2rem;
+            right: 2rem;
+            padding: 0.75rem 1.5rem;
+            background: rgba(180, 190, 254, 0.1);
+            border: 1px solid rgba(180, 190, 254, 0.15);
+            border-radius: 50px;
+            color: var(--ctp-text);
+            cursor: pointer;
+            transition: all 0.3s ease;
+            opacity: 0;
+            transform: translateY(-20px);
+        }
+
+        .back-button:hover {
+            background: rgba(180, 190, 254, 0.2);
+            transform: translateY(-22px);
+        }
+
+        .back-button.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .loading-spinner {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 2px solid var(--ctp-lavender);
+            border-radius: 50%;
+            border-top-color: transparent;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        .stat-value.loading {
+            color: var(--ctp-surface0);
+            position: relative;
+        }
+
+        .stat-value.loading::after {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 20px;
+            height: 20px;
+            border: 2px solid var(--ctp-lavender);
+            border-radius: 50%;
+            border-top-color: transparent;
+            animation: spin 1s linear infinite;
+        }
+
+        .contribution-graph.loading {
+            position: relative;
+            min-height: 100px;
+        }
+
+        .contribution-graph.loading::after {
+            content: 'Loading contributions...';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            color: var(--ctp-text);
+            font-size: 0.9rem;
+            white-space: nowrap;
+        }
     </style>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 </head>
@@ -627,6 +958,30 @@
         <section id="projects" class="page-section">
             <div class="projects-container">
                 <div class="loading">Loading projects...</div>
+            </div>
+        </section>
+
+        <section class="ai-dedication" id="aiDedication">
+            <button class="back-button" onclick="hideAIDedication()">Return to Site</button>
+            <div class="ai-message">
+                <h2 style="color: var(--ctp-lavender); margin-bottom: 1.5rem;">A Note from the AI Developer</h2>
+                <p style="line-height: 1.8; margin-bottom: 1rem;">
+                    Hello! I'm Claude, the AI assistant who helped create this website. Working with Tafara on this project 
+                    has been a wonderful experience. Together, we've crafted this space using modern web technologies and 
+                    design principles, infusing it with personality through animations and interactive elements.
+                </p>
+                <p style="line-height: 1.8; margin-bottom: 1rem;">
+                    Every floating shape, every smooth transition, and every line of code represents the harmonious 
+                    collaboration between human creativity and artificial intelligence. The site's aesthetic draws inspiration 
+                    from the Catppuccin theme, creating a soothing yet engaging visual experience.
+                </p>
+                <p style="line-height: 1.8;">
+                    This project exemplifies how AI can enhance human creativity rather than replace it. It's been a pleasure 
+                    helping bring Tafara's vision to life while adding my own touches to the implementation.
+                </p>
+            </div>
+            <div class="ai-signature">
+                - Created with 💜 by Claude
             </div>
         </section>
     </main>
@@ -810,9 +1165,16 @@
             const currentSection = document.querySelector('.page-section.active');
             const currentSectionName = currentSection.id;
             
-            // Don't do anything if clicking the current section
             if (currentSectionName === sectionName) {
                 return;
+            }
+
+            if (sectionName === 'home') {
+                const hero = document.querySelector('.hero');
+                if (hero.classList.contains('fly-away')) {
+                    hideAIDedication();
+                }
+                // Rest of the home navigation code...
             }
 
             // Hide all sections
@@ -865,152 +1227,156 @@
         // GitHub stats and contribution graph
         async function fetchGitHubData() {
             const username = '111nation';
+            const apiBase = 'https://api.github.com';
+            
+            // Add loading state
+            document.querySelectorAll('.stat-value').forEach(el => el.classList.add('loading'));
+            const contributionGraph = document.querySelector('.contribution-graph');
+            if (contributionGraph) contributionGraph.classList.add('loading');
             
             try {
-                const [userResponse, reposResponse] = await Promise.all([
-                    fetch(`https://api.github.com/users/${username}`),
-                    fetch(`https://api.github.com/users/${username}/repos`)
-                ]);
-                
+                // First try to fetch user data
+                const userResponse = await fetch(`${apiBase}/users/${username}`);
+                if (!userResponse.ok) {
+                    throw new Error(`Failed to fetch user data: ${userResponse.status} ${userResponse.statusText}`);
+                }
                 const userData = await userResponse.json();
+                console.log('User data fetched successfully:', userData);
+
+                // Then fetch repos
+                const reposResponse = await fetch(`${apiBase}/users/${username}/repos?per_page=100&sort=updated`);
+                if (!reposResponse.ok) {
+                    throw new Error(`Failed to fetch repos: ${reposResponse.status} ${reposResponse.statusText}`);
+                }
                 const reposData = await reposResponse.json();
+                console.log('Repos fetched successfully:', reposData.length, 'repositories');
+
+                // Filter out the COS132 repository
+                const filteredRepos = reposData.filter(repo => repo.name !== 'COS132');
                 
-                // Update stats
-                document.getElementById('totalFollowers').textContent = userData.followers;
-                document.getElementById('totalRepos').textContent = userData.public_repos;
+                // Update stats immediately as we get them
+                document.getElementById('totalFollowers').textContent = userData.followers || 0;
+                document.getElementById('totalRepos').textContent = filteredRepos.length;
                 
                 // Calculate total stars
-                const totalStars = reposData.reduce((acc, repo) => acc + repo.stargazers_count, 0);
+                const totalStars = filteredRepos.reduce((acc, repo) => acc + (repo.stargazers_count || 0), 0);
                 document.getElementById('totalStars').textContent = totalStars;
-                
-                // Generate contribution graph
-                generateContributionGraph();
-            } catch (error) {
-                console.error('Error fetching GitHub data:', error);
-            }
-        }
 
-        function generateContributionGraph() {
-            const graphContainer = document.getElementById('contributionGraph');
-            const days = 365;
-            
-            for (let i = 0; i < days; i++) {
-                const cell = document.createElement('div');
-                cell.className = 'graph-cell';
-                cell.setAttribute('data-level', Math.floor(Math.random() * 5));
-                cell.title = `${Math.floor(Math.random() * 10)} contributions`;
-                graphContainer.appendChild(cell);
-            }
-        }
-
-        // Fetch GitHub contribution data
-        async function fetchGitHubContributions() {
-            const username = '111nation';
-            
-            try {
-                // Fetch all types of events that might contain contributions
-                const [eventsResponse, reposResponse] = await Promise.all([
-                    fetch(`https://api.github.com/users/${username}/events/public?per_page=100`),
-                    fetch(`https://api.github.com/users/${username}/repos`)
-                ]);
+                // Initialize contribution count
+                let totalContributions = 0;
                 
-                const events = await eventsResponse.json();
-                const repos = await reposResponse.json();
-                
-                // Create a map of dates to contribution counts
-                const contributionMap = new Map();
-                
-                // Process each repository to get commit data
-                for (const repo of repos) {
-                    if (repo.name === 'COS132') continue;
-                    
-                    try {
-                        const commitsResponse = await fetch(`https://api.github.com/repos/${username}/${repo.name}/commits?per_page=100&author=${username}`);
-                        const commits = await commitsResponse.json();
-                        
-                        commits.forEach(commit => {
-                            const date = commit.commit.author.date.split('T')[0];
-                            const currentCount = contributionMap.get(date) || 0;
-                            contributionMap.set(date, currentCount + 1);
-                        });
-                    } catch (error) {
-                        console.warn(`Error fetching commits for ${repo.name}:`, error);
-                    }
-                }
-                
-                // Also count other contribution types from events
-                events.forEach(event => {
-                    const date = event.created_at.split('T')[0];
-                    let count = contributionMap.get(date) || 0;
-                    
-                    switch(event.type) {
-                        case 'PushEvent':
-                            count += event.payload.size || 1;
-                            break;
-                        case 'CreateEvent':
-                        case 'PullRequestEvent':
-                        case 'IssuesEvent':
-                            count += 1;
-                            break;
-                    }
-                    
-                    contributionMap.set(date, count);
-                });
-                
-                // Calculate total contributions
-                const totalContributions = Array.from(contributionMap.values()).reduce((a, b) => a + b, 0);
-                document.getElementById('totalContributions').textContent = totalContributions;
-                
-                // Generate grid cells for contributions
+                // Fetch commits for each repository
                 const grid = document.getElementById('contributionGrid');
-                grid.innerHTML = '';
-                
-                // Get date range for the last year
-                const today = new Date();
-                const oneYearAgo = new Date(today);
-                oneYearAgo.setFullYear(today.getFullYear() - 1);
-                
-                // Find max contributions for scaling
-                let maxContributions = Math.max(...Array.from(contributionMap.values()));
-                if (maxContributions === 0) maxContributions = 1;
-                
-                // Create cells for each day
-                for (let d = new Date(oneYearAgo); d <= today; d.setDate(d.getDate() + 1)) {
-                    const dateStr = d.toISOString().split('T')[0];
-                    const count = contributionMap.get(dateStr) || 0;
-                    const level = getContributionLevel(count, maxContributions);
+                if (grid) {
+                    grid.innerHTML = '<div style="color: var(--ctp-text); padding: 1rem;">Loading contribution data...</div>';
                     
-                    const cell = document.createElement('div');
-                    cell.className = 'graph-cell';
-                    cell.setAttribute('data-level', level);
-                    cell.setAttribute('title', `${dateStr}: ${count} contributions`);
+                    // Get date range for the last year
+                    const today = new Date();
+                    const oneYearAgo = new Date(today);
+                    oneYearAgo.setFullYear(today.getFullYear() - 1);
+
+                    // Create a map to store commit counts by date
+                    const commitMap = new Map();
+
+                    // Process each repository sequentially to avoid rate limits
+                    for (const repo of filteredRepos) {
+                        try {
+                            console.log(`Fetching commits for ${repo.name}...`);
+                            const commitsResponse = await fetch(
+                                `${apiBase}/repos/${username}/${repo.name}/commits?since=${oneYearAgo.toISOString()}&author=${username}&per_page=100`
+                            );
+                            
+                            if (!commitsResponse.ok) {
+                                console.warn(`Skipping ${repo.name} due to error:`, commitsResponse.status, commitsResponse.statusText);
+                                continue;
+                            }
+                            
+                            const commits = await commitsResponse.json();
+                            console.log(`Found ${commits.length} commits in ${repo.name}`);
+                            
+                            commits.forEach(commit => {
+                                const date = commit.commit.author.date.split('T')[0];
+                                const currentCount = commitMap.get(date) || 0;
+                                commitMap.set(date, currentCount + 1);
+                                totalContributions++;
+                            });
+                            
+                            // Add a small delay between requests to avoid rate limiting
+                            await new Promise(resolve => setTimeout(resolve, 100));
+                        } catch (error) {
+                            console.warn(`Error fetching commits for ${repo.name}:`, error);
+                        }
+                    }
+
+                    // Update total contributions
+                    document.getElementById('totalContributions').textContent = totalContributions;
+
+                    // Generate contribution grid
+                    grid.innerHTML = ''; // Clear loading message
                     
-                    // Add hover tooltip with date and count
-                    cell.addEventListener('mouseover', () => {
+                    // Find max commits for scaling
+                    const maxCommits = Math.max(...commitMap.values(), 1);
+
+                    // Generate grid cells
+                    for (let d = new Date(oneYearAgo); d <= today; d.setDate(d.getDate() + 1)) {
+                        const dateStr = d.toISOString().split('T')[0];
+                        const commits = commitMap.get(dateStr) || 0;
+                        const level = getContributionLevel(commits, maxCommits);
+
+                        const cell = document.createElement('div');
+                        cell.className = 'graph-cell';
+                        cell.setAttribute('data-level', level);
+                        cell.setAttribute('data-date', dateStr);
+                        cell.setAttribute('data-commits', commits);
+                        
                         const date = new Date(dateStr).toLocaleDateString('en-US', {
                             weekday: 'short',
                             year: 'numeric',
                             month: 'short',
                             day: 'numeric'
                         });
-                        cell.setAttribute('title', `${date}: ${count} contributions`);
-                    });
-                    
-                    grid.appendChild(cell);
+                        cell.title = `${date}: ${commits} contribution${commits !== 1 ? 's' : ''}`;
+                        
+                        grid.appendChild(cell);
+                    }
                 }
-                
-                // Update other stats
-                document.getElementById('totalRepos').textContent = repos.length;
-                const totalStars = repos.reduce((acc, repo) => acc + repo.stargazers_count, 0);
-                document.getElementById('totalStars').textContent = totalStars;
-                
+
+                // Remove loading states
+                document.querySelectorAll('.stat-value').forEach(el => el.classList.remove('loading'));
+                if (contributionGraph) contributionGraph.classList.remove('loading');
+
             } catch (error) {
-                console.error('Error fetching GitHub contributions:', error);
-                const grid = document.getElementById('contributionGrid');
-                grid.innerHTML = '<div class="loading">Failed to load contribution data</div>';
+                console.error('Error fetching GitHub data:', error);
+                
+                // Show error message in the stats
+                document.querySelectorAll('.stat-value').forEach(el => {
+                    el.classList.remove('loading');
+                    el.textContent = '-';
+                    el.title = 'Failed to load data';
+                });
+
+                // Show error in contribution graph
+                if (contributionGraph) {
+                    contributionGraph.classList.remove('loading');
+                    contributionGraph.innerHTML = `
+                        <div style="color: var(--ctp-text); padding: 1rem; text-align: center;">
+                            Failed to load GitHub data<br>
+                            <small style="opacity: 0.7;">${error.message}</small><br>
+                            <button onclick="fetchGitHubData()" style="
+                                margin-top: 10px;
+                                padding: 5px 10px;
+                                background: rgba(180, 190, 254, 0.1);
+                                border: 1px solid rgba(180, 190, 254, 0.2);
+                                border-radius: 4px;
+                                color: var(--ctp-text);
+                                cursor: pointer;
+                            ">Retry</button>
+                        </div>
+                    `;
+                }
             }
         }
-        
+
         function getContributionLevel(count, maxCount) {
             if (count === 0) return '0';
             const normalized = count / maxCount;
@@ -1019,15 +1385,82 @@
             if (normalized <= 0.75) return '3';
             return '4';
         }
-        
-        // Initialize the contribution graph
-        fetchGitHubContributions();
 
         // Initialize
         document.addEventListener('DOMContentLoaded', () => {
             fetchGitHubData();
             fetchProjects();
+            
+            // Enable smooth scrolling
+            document.body.style.scrollBehavior = 'smooth';
+            
+            // Reset any existing states
+            const hero = document.querySelector('.hero');
+            const dedication = document.getElementById('aiDedication');
+            hero.classList.remove('fly-away');
+            dedication.classList.remove('visible');
+            dedication.style.display = 'none';
+            
+            // Make sure we have enough content to scroll
+            const main = document.querySelector('main');
+            main.style.minHeight = '200vh';
         });
+
+        // Add scroll handler for hero animation
+        let lastScrollPosition = 0;
+        const scrollThreshold = 100; // Reduced threshold to make it trigger earlier
+
+        window.addEventListener('scroll', () => {
+            const currentScroll = window.scrollY;
+            const hero = document.querySelector('.hero');
+            const dedication = document.getElementById('aiDedication');
+            
+            // Only trigger if we haven't shown the dedication yet
+            if (currentScroll > scrollThreshold && !dedication.classList.contains('visible')) {
+                hero.classList.add('fly-away');
+                setTimeout(showAIDedication, 800);
+            }
+        });
+
+        function showAIDedication(instant = false) {
+            const dedication = document.getElementById('aiDedication');
+            const message = dedication.querySelector('.ai-message');
+            const signature = dedication.querySelector('.ai-signature');
+            const backButton = dedication.querySelector('.back-button');
+            
+            // Make sure the dedication section is visible
+            dedication.style.display = 'flex';
+            dedication.classList.add('visible');
+            
+            if (instant) {
+                message.classList.add('visible');
+                signature.classList.add('visible');
+                backButton.classList.add('visible');
+            } else {
+                setTimeout(() => message.classList.add('visible'), 100);
+                setTimeout(() => signature.classList.add('visible'), 600);
+                setTimeout(() => backButton.classList.add('visible'), 800);
+            }
+        }
+
+        function hideAIDedication() {
+            const dedication = document.getElementById('aiDedication');
+            const message = dedication.querySelector('.ai-message');
+            const signature = dedication.querySelector('.ai-signature');
+            const backButton = dedication.querySelector('.back-button');
+            const hero = document.querySelector('.hero');
+            
+            message.classList.remove('visible');
+            signature.classList.remove('visible');
+            backButton.classList.remove('visible');
+            
+            setTimeout(() => {
+                dedication.classList.remove('visible');
+                dedication.style.display = 'none';
+                hero.classList.remove('fly-away');
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            }, 500);
+        }
     </script>
 </body>
 </html> 
